@@ -1,0 +1,14 @@
+#!/bin/bash
+
+# remove all iso records from WAF
+rm -rf /home/testbed/iso/iso_records
+
+# remove all records from SQLITE3 database
+#sqlite3 /var/www/pycsw/tests/suites/cite/data/records.db 'delete from records'
+pycsw-admin.py -c delete_records -f default.cfg -y
+
+# harvest new iso records into WAF
+python get_iso.py
+
+# load new records into database
+pycsw-admin.py -c load_records -p /home/testbed/iso/iso_records -f default.cfg -r
